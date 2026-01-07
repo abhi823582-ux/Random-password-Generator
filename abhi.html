@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickPass | Password Generator</title>
+    <style>
+        /* CSS: Styling the Interface */
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 350px; }
+        h2 { margin-top: 0; color: #333; font-size: 1.5rem; }
+        .result-container { background: #f4f4f9; padding: 12px; display: flex; justify-content: space-between; align-items: center; border-radius: 6px; margin-bottom: 1rem; border: 1px solid #ddd; }
+        #password-display { font-weight: bold; word-break: break-all; color: #2563eb; }
+        button { cursor: pointer; border: none; border-radius: 4px; padding: 8px 12px; transition: 0.2s; }
+        .btn-copy { background: #e2e8f0; font-size: 0.8rem; }
+        .btn-copy:hover { background: #cbd5e1; }
+        .btn-generate { background: #2563eb; color: white; width: 100%; padding: 12px; font-size: 1rem; margin-top: 1rem; }
+        .btn-generate:hover { background: #1d4ed8; }
+        .setting { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; font-size: 0.9rem; }
+        input[type="number"] { width: 40px; padding: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Password Generator</h2>
+    
+    <div class="result-container">
+        <span id="password-display">P@ssw0rd123!</span>
+        <button class="btn-copy" id="copy-btn">Copy</button>
+    </div>
+
+    <div class="settings">
+        <div class="setting">
+            <label>Password Length</label>
+            <input type="number" id="length" min="4" max="32" value="12">
+        </div>
+        <div class="setting">
+            <label>Include Uppercase</label>
+            <input type="checkbox" id="uppercase" checked>
+        </div>
+        <div class="setting">
+            <label>Include Numbers</label>
+            <input type="checkbox" id="numbers" checked>
+        </div>
+        <div class="setting">
+            <label>Include Symbols</label>
+            <input type="checkbox" id="symbols" checked>
+        </div>
+    </div>
+
+    <button class="btn-generate" id="generate-btn">Generate Password</button>
+</div>
+
+<script>
+    /* JavaScript: Logic for Generation */
+    const displayEl = document.getElementById('password-display');
+    const copyBtn = document.getElementById('copy-btn');
+    const generateBtn = document.getElementById('generate-btn');
+    
+    const lengthEl = document.getElementById('length');
+    const upperEl = document.getElementById('uppercase');
+    const numEl = document.getElementById('numbers');
+    const symEl = document.getElementById('symbols');
+
+    const chars = {
+        lower: 'abcdefghijklmnopqrstuvwxyz',
+        upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+        number: '0123456789',
+        symbol: '!@#$%^&*()_+~`|}{[]:;?><,./-='
+    };
+
+    function generatePassword() {
+        let length = +lengthEl.value;
+        let charPool = chars.lower;
+        let generatedPassword = '';
+
+        if (upperEl.checked) charPool += chars.upper;
+        if (numEl.checked) charPool += chars.number;
+        if (symEl.checked) charPool += chars.symbol;
+
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * charPool.length);
+            generatedPassword += charPool[randomIndex];
+        }
+
+        displayEl.innerText = generatedPassword;
+    }
+
+    // Copy to Clipboard logic
+    copyBtn.addEventListener('click', () => {
+        const password = displayEl.innerText;
+        if (!password) return;
+        navigator.clipboard.writeText(password);
+        alert('Password copied to clipboard!');
+    });
+
+    generateBtn.addEventListener('click', generatePassword);
+
+    // Initialize with a password on load
+    generatePassword();
+</script>
+
+</body>
+</html>
